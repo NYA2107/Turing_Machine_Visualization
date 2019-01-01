@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<html>
+  <head>
+    <meta name="viewport" width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0>
+    <!-- ////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <style> 
+      body{
+          padding: 0; 
+          margin: 0; 
+          text-align: center;
+          background-color: white;
+          font-family: arial;
+          color:black;
+        } 
+        input{
+          margin: 5px;
+        }
+        button{
+          margin: 5px; 
+        }
+        .container{
+          display: flex;
+          justify-content: center;
+        }
+        #howto{
+          width: 1000px;
+          border-radius: 10px;
+        }
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+
+        td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 5px;
+        }
+
+        tr:nth-child(even) {
+          background-color: #dddddd;
+        }
+        /* width */
+        ::-webkit-scrollbar {
+          width: 5px;
+          position: absolute;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+          background: #f1f1f1; 
+        }
+         
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+          background: #888; 
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+          background: #555; 
+        }
+    </style>
+    <!-- /////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <script src="libraries/p5.min.js"></script>
+    <script src="libraries/addons/p5.dom.min.js"></script>
+    <script src="libraries/addons/p5.sound.min.js"></script>
+    <script language="javascript" type="text/javascript" src="TuringMachine.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script language="javascript" type="text/javascript" src="singleLinkedList.js"></script>
+    <script language="javascript" type="text/javascript" src="Point.js"></script>
+    <script language="javascript" type="text/javascript" src="Support.js"></script>
+    <script language="javascript" type="text/javascript" src="Draw.js"></script>
+    <script language="javascript" type="text/javascript" src="sketch.js"></script>
+    <!-- ///////////////////////////////////////////////////////////////////////////////////////////// -->
+  </head>
+  <body>
+        
+        
+        <div id="result">
+          <div class="input-group-sm" style="width:100%;height:auto;background-color:white;z-index:50;  display: flex;flex-wrap: wrap;align-items: center;justify-content: center;">
+            <input style="width: 20%;" class="form-control" placeholder="input 1" v-model="a" type="number" name="">
+            <input style="width: 20%;" class="form-control" placeholder="input 2" v-model="b"  v-if="input2" type="number" name="">
+            <select style="width: 20%;" class="form-control" @change='operation()' v-model="selectedOperation">
+              <!-- inline object literal -->
+              <option v-bind:value="''">Select Operation</option>
+              <option v-bind:value="'+'">Addition</option>
+              <option v-bind:value="'-'">Substraction</option>
+              <option v-bind:value="'*'">Multiplication</option>
+              <option v-bind:value="'/'">Division</option>
+              <option v-bind:value="'!'">Factorial</option>
+            </select>
+            <button type="button" class="btn btn-dark" @click="calculate">Calculate</button>
+            <div style="width: 100%;" class="accordion" id="accordionExample">
+            <div v-if="record" class="card">
+              <div style="padding: 0px" class="card-header">
+                  <button class="btn btn-dark btn-sm" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    Toggle Show Table
+                  </button> 
+              </div>
+              <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
+                <div style="justify-content: left;display: flex;width: 100%;padding: 10px;height: auto;overflow: auto;">
+                  <table v-if="selectedOperation != '!'" class="table" style="width:100%;">
+                    <thead class="thead-dark">
+                      <tr>
+                          <th style="padding: 3px;text-align: center;">No</th>
+                          <th style="padding: 3px;height: 5px;text-align: center;">Current State</th>
+                          <th style="padding: 3px;height: 5px;text-align: center;">Next State</th> 
+                          <th style="padding: 3px;height: 5px;text-align: center;">Input</th>
+                          <th style="padding: 3px;height: 5px;text-align:center;">Current Tape</th>
+                          <th style="padding: 3px;height: 5px;text-align:center;">Replace Tape</th>
+                          <th style="padding: 3px;height: 5px;text-align: center;">Direction</th>
+                          <th style="padding: 3px;height: 5px;text-align: center;">Check</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr style="text-align: center;" v-for="data in record">
+                          <td style="padding: 1px;height: 5px; text-align: center;">{{data.counter}}</td>
+                          <td style="padding: 1px;height: 5px;text-align: center;">{{data.state}}</td>
+                          <td style="padding: 1px;height: 5px;text-align: center;">{{data.nextState}}</td> 
+                          <td style="padding: 1px;height: 5px;text-align: center;">{{data.input}}</td>
+                          <td style="padding: 1px;height: 5px; text-align:center;">{{data.tape}}</td>
+                          <td style="padding: 1px;height: 5px; text-align:center;">{{data.replaceTape}}</td>
+                          <td style="padding: 1px;height: 5px;text-align: center;">{{data.direction}}</td>
+                          <td style="padding: 1px;height: 5px;text-align: center;"><button class="btn btn-dark btn-sm" :id='data.state' onclick="Check(this.id)">Check</button></td>
+                      </tr>
+                    </tbody>
+                  </table> 
+                  <table v-if="selectedOperation == '!'" class="table" style="width:100%;">
+                    <thead class="thead-dark">
+                      <tr>
+                          <th style="padding: 3px;text-align: center;">No</th>
+                          <th style="padding: 3px;height: 5px;text-align: center;">State</th>
+                          <th style="padding: 3px;height: 5px;text-align: center;">Next State</th> 
+                          <th style="padding: 3px;height: 5px;text-align: center;">Input1</th>
+                          <th style="padding: 3px;height: 5px;text-align: center;">Input2</th>
+                          <th style="padding: 3px;height: 5px;text-align: center;">Input3</th>
+                          <th style="padding: 3px;height: 5px;text-align:center;">Tape1</th>
+                          <th style="padding: 3px;height: 5px;text-align:center;">Tape2</th>
+                          <th style="padding: 3px;height: 5px;text-align:center;">Tape3</th>
+                          <th style="padding: 3px;height: 5px;text-align:center;">rTape1</th>
+                          <th style="padding: 3px;height: 5px;text-align:center;">rTape2</th>
+                          <th style="padding: 3px;height: 5px;text-align:center;">rTape3</th>
+                          <th style="padding: 3px;height: 5px;text-align: center;">Dir1</th>
+                          <th style="padding: 3px;height: 5px;text-align: center;">Dir2</th>
+                          <th style="padding: 3px;height: 5px;text-align: center;">Dir3</th>
+                          <th style="padding: 3px;height: 5px;text-align: center;">Check</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr style="text-align: center;" v-for="data in record">
+                          <td style="padding: 1px;height: 5px; text-align: center;">{{data.counter}}</td>
+                          <td style="padding: 1px;height: 5px;text-align: center;">{{data.state}}</td>
+                          <td style="padding: 1px;height: 5px;text-align: center;">{{data.nextState}}</td> 
+                          <td style="padding: 1px;height: 5px;text-align: center;">{{data.input1}}</td>
+                          <td style="padding: 1px;height: 5px;text-align: center;">{{data.input2}}</td>
+                          <td style="padding: 1px;height: 5px;text-align: center;">{{data.input3}}</td>
+                          <td style="padding: 1px;height: 5px; text-align:center;">{{data.tape1}}</td>
+                          <td style="padding: 1px;height: 5px; text-align:center;">{{data.tape2}}</td>
+                          <td style="padding: 1px;height: 5px; text-align:center;">{{data.tape3}}</td>
+                          <td style="padding: 1px;height: 5px; text-align:center;">{{data.rTape1}}</td>
+                          <td style="padding: 1px;height: 5px; text-align:center;">{{data.rTape2}}</td>
+                          <td style="padding: 1px;height: 5px; text-align:center;">{{data.rTape3}}</td>
+                          <td style="padding: 1px;height: 5px;text-align: center;">{{data.direction1}}</td>
+                          <td style="padding: 1px;height: 5px;text-align: center;">{{data.direction2}}</td>
+                          <td style="padding: 1px;height: 5px;text-align: center;">{{data.direction3}}</td>
+                          <td style="padding: 1px;height: 5px;text-align: center;"><button class="btn btn-dark btn-sm" :id='data.state' onclick="Check(this.id)">Check</button></td>
+                      </tr>
+                    </tbody>
+                  </table> 
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 8px;" id="app"></div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+        <script>
+          let operation = ''
+          let record = []
+
+          let app = new Vue({
+            el: '#result',
+            created(){
+              this.turing = new TuringMachine()
+            },
+            data: {
+              record:null,
+              selected:'',
+              selectedOperation:'',
+              value:'',
+              input2:true,
+              a:null,
+              b:null,
+              turing:null
+            },
+            methods:{
+              operation: function(){
+                if(this.selectedOperation == '!'){
+                  this.input2 = false
+                }else{
+                  this.input2 = true
+                }
+              },
+              calculate: function(){
+                this.record = null
+                switch(this.selectedOperation){
+                  case '':{
+                    console.log('kosong')
+                    break
+                  }
+                  case '+':{
+                    operation = '+'
+                    console.log('add')
+                    this.record = this.turing.addition(this.a,this.b)
+                    record = this.record
+                    break
+                  }case '-':{
+                    console.log('min')
+                    operation = '-'
+                    this.record = this.turing.substraction(this.a,this.b)
+                    record = this.record
+                    break
+                  }case '*':{
+                    operation = '*'
+                    console.log('mult')
+                    this.record = this.turing.multiplication(this.a,this.b)
+                    record = this.record
+                    break
+                  }case '/':{
+                    operation = '/'
+                    console.log('div')
+                    this.record = this.turing.division(this.a,this.b)
+                    record = this.record
+                    break
+                  }case '!':{
+                    console.log('fact')
+                    operation = '!'
+                    this.record = this.turing.factorial(this.a)
+                    break
+                  }
+                }  
+              }
+            }
+            
+          })
+        </script>
+  </body>
+</html>

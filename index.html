@@ -98,9 +98,13 @@
             <div style="width: 100%;" class="accordion" id="accordionExample">
             <div v-if="record" class="card">
               <div style="padding: 0px" class="card-header">
+                  <div class="alert alert-primary" role="alert">
+                    Result : {{record[0].result}}
+
+                  </div>
                   <button class="btn btn-dark btn-sm" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                     Toggle Show Table
-                  </button> 
+                  </button>
               </div>
               <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
                 <div style="justify-content: left;display: flex;width: 100%;padding: 10px;height: auto;overflow: auto;">

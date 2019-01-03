@@ -576,10 +576,12 @@ class TuringMachine{
 					break
 				}case 'q7':{
 					if(input.charAt(curr) == '0' || input.charAt(curr) == 'X'){
+						direction = 'left'
 						record[record.length - 1].replaceTape = input.charAt(curr)
 						curr--
 					}else if(input.charAt(curr) == '1'){
 						state = 'q8'
+						direction = 'left'
 						record[record.length - 1].replaceTape = input.charAt(curr)
 						curr--
 					}else{
@@ -604,24 +606,28 @@ class TuringMachine{
 				}case 'q9':{
 					if(input.charAt(curr) == '0' || input.charAt(curr) == 'X'){
 						input = input.replaceAt(curr, '_')
-						state = 'q10'
 						direction = 'left'
 						record[record.length - 1].replaceTape = input.charAt(curr)
 						curr--
+					}else if(input.charAt(curr) == '_'){
+						direction = 'right'
+						state = 'q10'
+						record[record.length - 1].replaceTape = input.charAt(curr)
+						curr++
 					}else{
 						return null
 					}
 					break
 				}case 'q10':{
-					if(input.charAt(curr) == '0' || input.charAt(curr) == 'X'){
+					if(input.charAt(curr) == '_' || input.charAt(curr) == 'X'){
 						input = input.replaceAt(curr, '_')
-						state = 'q10'
-						direction = 'left'
-						record[record.length - 1].replaceTape = input.charAt(curr)
-						curr--
-					}else if(input.charAt(curr) == '_'){
-						state = 'q11'
 						direction = 'right'
+						record[record.length - 1].replaceTape = input.charAt(curr)
+						curr++
+					}else if(input.charAt(curr) == '1'){
+						input = input.replaceAt(curr, '_')
+						direction = 'right'
+						state = 'q11'
 						record[record.length - 1].replaceTape = input.charAt(curr)
 						curr++
 					}else{
@@ -629,22 +635,6 @@ class TuringMachine{
 					}
 					break
 				}case 'q11':{
-					if(input.charAt(curr) == '_' || input.charAt(curr) == '0' || input.charAt(curr) == 'X' ){
-						input = input.replaceAt(curr, '_')
-						direction = 'right'
-						record[record.length - 1].replaceTape = input.charAt(curr)
-						curr++
-					}else if(input.charAt(curr) == '1'){
-						input = input.replaceAt(curr, '_')
-						state = 'q12'
-						direction = 'right'
-						record[record.length - 1].replaceTape = input.charAt(curr)
-						curr++
-					}else{
-						return null
-					}
-					break
-				}case 'q12':{
 					let result = 0
 					for(let i = 0; i < record[record.length -1].input.length; i++){
 						if(record[record.length -1].input.charAt(i) == '0'){
